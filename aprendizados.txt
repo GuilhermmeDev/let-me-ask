@@ -1,0 +1,4 @@
+ Aula 1
+ - Drizzle como orm e migrator e seeder de sql para postgres
+ - integração do docker postgres com node
+ - formatação de .env com o zod
