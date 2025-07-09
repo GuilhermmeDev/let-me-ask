@@ -1,6 +1,19 @@
 # Variables
 @baseUrl = http://localhost:3333
 
+###
+
 # Get rooms
 GET {{baseUrl}}/rooms
 
+###
+
+
+# Create a new room
+POST {{baseUrl}}/rooms
+Content-Type: application/json
+
+{
+  "name": "New Room",
+  "description": "This is a new room created via API"
+}
