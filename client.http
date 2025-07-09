@@ -4,12 +4,14 @@
 ###
 
 # Get rooms
+# @name getRooms
 GET {{baseUrl}}/rooms
 
 ###
 
 
 # Create a new room
+# @name createRoom
 POST {{baseUrl}}/rooms
 Content-Type: application/json
 
@@ -17,3 +19,14 @@ Content-Type: application/json
   "name": "New Room",
   "description": "This is a new room created via API"
 }
+
+
+###
+
+@roomId = {{createRoom.response.body.$.roomId}}
+
+###
+# Get room questions
+# @name getRoomQuestions
+
+GET  {{baseUrl}}/rooms/{{roomId}}/questions

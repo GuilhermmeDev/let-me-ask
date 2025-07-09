@@ -5,8 +5,9 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod'
-import { sql } from './db/connection.ts'
 import { env } from './env.ts'
+import { createRoomRoute } from './http/routes/create-room.ts'
+import { getRoomsQuestions } from './http/routes/get-room-questions.ts'
 import { getRoomsRoute } from './http/routes/get-routes.ts'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
@@ -19,5 +20,7 @@ app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
 
 app.register(getRoomsRoute)
+app.register(createRoomRoute)
+app.register(getRoomsQuestions)
 
 app.listen({ port: env.PORT })
