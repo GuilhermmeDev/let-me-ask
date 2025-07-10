@@ -36,7 +36,7 @@ export default function RoomList() {
 
                 <div className="flex items-center gap-2">
                   <Badge className="text-xs" variant={'secondary'}>
-                    {dayjs(room.createdAt).toNow()}
+                    {dayjs(room.createdAt).fromNow()}
                   </Badge>
 
                   <Badge className="text-xs" variant={'secondary'}>
