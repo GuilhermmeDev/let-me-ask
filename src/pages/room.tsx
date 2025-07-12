@@ -4,6 +4,7 @@ import { ContentList } from '@/components/content-list'
 import { QuestionForm } from '@/components/question-form'
 import { QuestionList } from '@/components/question-list'
 import { Button } from '@/components/ui/button'
+import { useContentRoom } from '@/http/use-content-room'
 
 type RoomParams = {
   roomId: string
@@ -11,6 +12,7 @@ type RoomParams = {
 
 export function Room() {
   const params = useParams<RoomParams>()
+  const { data: contentData } = useContentRoom(params.roomId ?? '')
 
   if (!params.roomId) {
     return <Navigate replace to="/" />
@@ -41,15 +43,16 @@ export function Room() {
             Faça perguntas e receba respostas com IA
           </p>
         </div>
-
         <div className="mb-8">
-          <QuestionForm roomId={params.roomId} />
+          {contentData && contentData.length > 0 && (
+            <QuestionForm roomId={params.roomId} />
+          )}
         </div>
 
         <div className="flex flex-col gap-8">
           <QuestionList roomId={params.roomId} />
 
-          <ContentList roomId={params.roomId} />
+          <ContentList contentData={contentData ?? []} />
         </div>
       </div>
     </div>

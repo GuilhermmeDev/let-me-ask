@@ -1,13 +1,11 @@
-import { useContentRoom } from '@/http/use-content-room'
+import type { getContentRoomResponse } from '@/http/types/get-content-room-response'
 import { ContentItem } from './content-item'
 
 interface ContentListProps {
-  roomId: string
+  contentData: getContentRoomResponse
 }
 
-export function ContentList(props: ContentListProps) {
-  const { data } = useContentRoom(props.roomId)
-
+export function ContentList({ contentData }: ContentListProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -15,8 +13,8 @@ export function ContentList(props: ContentListProps) {
           Conteúdo da sala
         </h2>
       </div>
-      {data && data.length > 0 ? (
-        data?.map((content) => {
+      {contentData && contentData.length > 0 ? (
+        contentData?.map((content) => {
           return <ContentItem content={content} key={content.id} />
         })
       ) : (

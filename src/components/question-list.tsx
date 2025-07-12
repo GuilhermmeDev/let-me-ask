@@ -15,10 +15,13 @@ export function QuestionList(props: QuestionListProps) {
           Perguntas & Respostas
         </h2>
       </div>
-
-      {data?.map((question) => {
-        return <QuestionItem key={question.id} question={question} />
-      })}
+      {data && data.length > 0 ? (
+        data?.map((question) => {
+          return <QuestionItem key={question.id} question={question} />
+        })
+      ) : (
+        <p className="text-muted-foreground">Esta sala não possui perguntas.</p>
+      )}
     </div>
   )
 }
