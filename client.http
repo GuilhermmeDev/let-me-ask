@@ -40,3 +40,8 @@ Content-Type: application/json
 {
     "question": "O que é React?"
 }
+
+###
+
+# Get content of the room
+GET {{baseUrl}}/rooms/{{roomId}}/content

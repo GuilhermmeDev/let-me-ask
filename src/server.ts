@@ -9,6 +9,7 @@ import {
 import { env } from './env.ts'
 import { createQuestionRoute } from './http/routes/create-question.ts'
 import { createRoomRoute } from './http/routes/create-room.ts'
+import { getRoomContent } from './http/routes/get-content-room.ts'
 import { getRoomsQuestions } from './http/routes/get-room-questions.ts'
 import { getRoomsRoute } from './http/routes/get-rooms.ts'
 import { uploadAudioRoute } from './http/routes/upload-audio.ts'
@@ -29,5 +30,6 @@ app.register(createRoomRoute)
 app.register(getRoomsQuestions)
 app.register(createQuestionRoute)
 app.register(uploadAudioRoute)
+app.register(getRoomContent)
 
 app.listen({ port: env.PORT })
