@@ -23,7 +23,7 @@ export function Room() {
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <div className="mb-8">
           <div className="mb-4 flex items-center justify-between">
-            <Link to="/">
+            <Link to="/rooms">
               <Button variant="outline">
                 <ArrowLeft className="mr-2 size-4" />
                 Voltar ao Início
