@@ -2,6 +2,7 @@
 import { Send, Upload } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
+import { ComercialLogo } from '@/components/comercial-logo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
@@ -101,18 +102,20 @@ export function RecordRoomAudio() {
   }
 
   // Função para fazer chunk do áudio em partes de 5 segundos
-  async function processAudioFile(audioBlob: Blob): Promise<void> {
+  function processAudioFile(audioBlob: Blob): Promise<void> {
     return new Promise((resolve, reject) => {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const audioContext = new (
+        window.AudioContext || (window as any).webkitAudioContext
+      )()
       const fileReader = new FileReader()
 
       fileReader.onload = async (event) => {
         try {
           const arrayBuffer = event.target?.result as ArrayBuffer
-          
+
           // Decodificar o áudio (funciona com MP3, WAV, WebM, etc.)
           const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
-          
+
           const sampleRate = audioBuffer.sampleRate
           const numberOfChannels = audioBuffer.numberOfChannels
           const chunkDuration = 5 // segundos
@@ -120,7 +123,9 @@ export function RecordRoomAudio() {
           const totalChunks = Math.ceil(audioBuffer.length / chunkSamples)
 
           console.log(`Processando ${totalChunks} chunks de 5 segundos cada`)
-          console.log(`Arquivo original: ${audioBuffer.duration.toFixed(2)}s, ${sampleRate}Hz, ${numberOfChannels} canais`)
+          console.log(
+            `Arquivo original: ${audioBuffer.duration.toFixed(2)}s, ${sampleRate}Hz, ${numberOfChannels} canais`
+          )
 
           for (let i = 0; i < totalChunks; i++) {
             const start = i * chunkSamples
@@ -128,8 +133,12 @@ export function RecordRoomAudio() {
             const chunkLength = end - start
 
             // Criar um novo AudioBuffer para o chunk
-            const chunkBuffer = audioContext.createBuffer(numberOfChannels, chunkLength, sampleRate)
-            
+            const chunkBuffer = audioContext.createBuffer(
+              numberOfChannels,
+              chunkLength,
+              sampleRate
+            )
+
             // Copiar dados do buffer original para o chunk
             for (let channel = 0; channel < numberOfChannels; channel++) {
               const originalData = audioBuffer.getChannelData(channel)
@@ -141,7 +150,7 @@ export function RecordRoomAudio() {
 
             // Converter AudioBuffer para Blob WebM
             const chunkBlob = await audioBufferToBlob(chunkBuffer)
-            
+
             // Upload do chunk
             setUploadProgress(`Enviando chunk ${i + 1} de ${totalChunks}`)
             await uploadAudio(chunkBlob)
@@ -152,8 +161,13 @@ export function RecordRoomAudio() {
           resolve()
         } catch (error) {
           console.error('Erro ao processar áudio:', error)
-          if (error instanceof Error && error.message.includes('Unable to decode audio data')) {
-            reject(new Error('Formato de áudio não suportado ou arquivo corrompido'))
+          if (
+            error instanceof Error &&
+            error.message.includes('Unable to decode audio data')
+          ) {
+            reject(
+              new Error('Formato de áudio não suportado ou arquivo corrompido')
+            )
           } else {
             reject(error)
           }
@@ -169,7 +183,7 @@ export function RecordRoomAudio() {
   }
 
   // Função para converter AudioBuffer em Blob WebM
-  async function audioBufferToBlob(audioBuffer: AudioBuffer): Promise<Blob> {
+  function audioBufferToBlob(audioBuffer: AudioBuffer): Promise<Blob> {
     return new Promise((resolve) => {
       const offlineContext = new OfflineAudioContext(
         audioBuffer.numberOfChannels,
@@ -183,22 +197,22 @@ export function RecordRoomAudio() {
       source.start()
 
       offlineContext.startRendering().then((renderedBuffer) => {
-        
         // Criar um MediaStreamAudioSourceNode
         const audioContext = new AudioContext()
-        const mediaStreamDestination = audioContext.createMediaStreamDestination()
-        
+        const mediaStreamDestination =
+          audioContext.createMediaStreamDestination()
+
         const bufferSource = audioContext.createBufferSource()
         bufferSource.buffer = renderedBuffer
         bufferSource.connect(mediaStreamDestination)
-        
+
         const mediaRecorder = new MediaRecorder(mediaStreamDestination.stream, {
           mimeType: 'audio/webm',
           audioBitsPerSecond: 64_000,
         })
 
         const chunks: Blob[] = []
-        
+
         mediaRecorder.ondataavailable = (event) => {
           if (event.data.size > 0) {
             chunks.push(event.data)
@@ -212,20 +226,23 @@ export function RecordRoomAudio() {
 
         mediaRecorder.start()
         bufferSource.start()
-        
+
         // Parar a gravação após a duração do buffer
-        setTimeout(() => {
-          mediaRecorder.stop()
-          bufferSource.stop()
-          audioContext.close()
-        }, (renderedBuffer.duration * 1000) + 100)
+        setTimeout(
+          () => {
+            mediaRecorder.stop()
+            bufferSource.stop()
+            audioContext.close()
+          },
+          renderedBuffer.duration * 1000 + 100
+        )
       })
     })
   }
 
   async function handleFileUpload(event: React.FormEvent) {
     event.preventDefault()
-    
+
     const file = fileInputRef.current?.files?.[0]
     if (!file) {
       alert('Por favor, selecione um arquivo de áudio')
@@ -248,7 +265,8 @@ export function RecordRoomAudio() {
       }
     } catch (error) {
       console.error('Erro no upload:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Erro no upload'
+      const errorMessage =
+        error instanceof Error ? error.message : 'Erro no upload'
       setUploadProgress(errorMessage)
       setTimeout(() => setUploadProgress(''), 5000)
     } finally {
@@ -262,6 +280,7 @@ export function RecordRoomAudio() {
 
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-3">
+      <ComercialLogo />
       {isRecording ? (
         <div className="flex flex-row gap-4">
           <Button onClick={stopRecording}>Pausar Áudio</Button>
@@ -281,18 +300,18 @@ export function RecordRoomAudio() {
           <hr />
           <form className="flex flex-col gap-4" onSubmit={handleFileUpload}>
             <div className="flex flex-row gap-4">
-              <Input 
+              <Input
+                accept="audio/mp3,audio/webm,audio/wav,audio/mpeg"
+                disabled={isProcessingFile}
                 ref={fileInputRef}
-                accept="audio/mp3,audio/webm,audio/wav,audio/mpeg" 
-                type="file" 
-                disabled={isProcessingFile}
+                type="file"
               />
-              <Button 
-                size={'icon'} 
-                type="submit"
-                disabled={isProcessingFile}
-              >
-                {isProcessingFile ? <Upload className="animate-spin" /> : <Send />}
+              <Button disabled={isProcessingFile} size={'icon'} type="submit">
+                {isProcessingFile ? (
+                  <Upload className="animate-spin" />
+                ) : (
+                  <Send />
+                )}
               </Button>
             </div>
             {uploadProgress && (
