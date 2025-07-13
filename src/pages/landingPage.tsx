@@ -11,7 +11,7 @@ export default function LandingPage() {
       <h1 className="mb-4 text-center font-bold text-3xl md:text-4xl">
         Bem-vindo ao Let me Ask
       </h1>
-      <p className="mb-8 max-w-md text-center text-lg text-muted-foreground">
+      <p className="mb-8 max-w-md text-center text-muted-foreground">
         Crie salas de perguntas e respostas ao vivo, interaja com sua audiência
         e torne seus eventos mais dinâmicos.
       </p>
